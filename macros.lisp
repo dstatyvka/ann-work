@@ -7,5 +7,5 @@
 	 (destructuring-bind ,(list r g b a)
 	     ,(append '(color-components (raw-pixel)) (and image (list image)))
 	   (declare (ignore ,a))
-	   (let ((,intensity (truncate (/ (+ ,r ,g ,b) 3.0))))
+	   (let ((,intensity (/ (+ ,r ,g ,b) 3.0 255.0)))
 	     ,@body))))))
