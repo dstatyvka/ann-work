@@ -12,4 +12,5 @@
   :depends-on (:gsll :cl-gd :cl-fad :cl-utilities)
   :components ((:file "packages")
 	       (:file "macros")
-	       (:file "io")))
+	       (:file "io")
+	       (:file "calc")))
