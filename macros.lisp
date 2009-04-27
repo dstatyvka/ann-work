@@ -1,0 +1,11 @@
+(in-package :number-one)
+
+(defmacro do-intensities ((intensity x y &optional (image *default-image*)) &body body)
+  (with-gensyms (r g b a)
+    `(do-rows ,(cons y (and image (list image)))
+       (do-pixels-in-row (,x)
+	 (destructuring-bind ,(list r g b a)
+	     ,(append '(color-components (raw-pixel)) (and image (list image)))
+	   (declare (ignore ,a))
+	   (let ((,intensity (truncate (/ (+ ,r ,g ,b) 3.0))))
+	     ,@body))))))
