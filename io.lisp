@@ -1,7 +1,7 @@
 (in-package :number-one)
 
-(defun read-file (fname &optional (threshold 0.5))
-  (with-image-from-file (*default-image* fname)
+(defun read-file (fname &optional (threshold 0.8))
+  (with-image-from-file* (fname)
     (let ((w (float (image-width)))
 	  (h (float (image-height)))
 	  xs ys)
@@ -11,3 +11,58 @@
 	  (push (/ y h) ys)))
       (list (make-marray 'double-float :initial-contents xs)
 	    (make-marray 'double-float :initial-contents ys)))))
+
+(defun write-compound-file (src dst &optional x y xr yr xvec yvec)
+  (declare (optimize (debug 3)))
+  (with-image-from-file (source src)
+    (with-image* ((image-width source) (image-height source) t)
+      (copy-image source *default-image* 0 0 0 0 (image-width) (image-height))
+      ;; (draw-filled-ellipse  (* x (image-width))
+;; 			    (* y (image-height))
+;; 			    )
+      (write-image-to-file dst :if-exists :supersede))))
+
+;; (with-magick-wand (w :create 320 200 :comp (230 230 230))
+;;   (with-drawing-wand (dw)
+;;     (with-pixel-wand (pw :comp (255 255 255))
+;;       (draw-set-fill-color dw pw))
+;;     (with-pixel-wand (pw :comp (0 0 0))
+;;       (draw-set-stroke-color dw pw))
+;;     (draw-set-stroke-width dw 1.0d0)
+;;     (draw-ellipse dw 100.0d0 100.0d0 80.0d0 50.0d0 0.0d0 360.0d0)
+;;     (magick-draw-image w dw))
+;;   (magick-write-image w "/home/dmitry/tmp/test.png"))
+
+;; convert 00000006.png -colorspace Gray -noise 2 -normalize  my-6.png
+
+;; (with-magick-wand (w :load "/home/dmitry/prj/ann/video/9_19/00000006.png")
+;; 	   (magick-set-image-colorspace w :gray)
+;; 	   (magick-median-filter-image w 5.0d0)
+;; 	   (let* ((iw (magick-get-image-width w))
+;; 		  (ih (magick-get-image-height w)))
+;; 	     (with-foreign-object (pixels :double (* iw ih))
+;; 	       (magick-get-image-pixels w 0 0 iw ih "I" :double pixels)
+;; 	       (dotimes (i (* iw ih))
+;; 		 (print (mem-aref pixels :double i))))))
+
+
+;; (with-magick-wand (w :load "/home/dmitry/prj/ann/video/9_19/00000006.png")
+;; 	   (magick-set-image-colorspace w :gray)
+;; 	   (magick-median-filter-image w 5.0d0)
+;; 	   (let* ((iw (magick-get-image-width w))
+;; 		  (ih (magick-get-image-height w))
+;; 		  (count (* iw ih))
+;; 		  (result (make-array count :element-type 'double-float)))
+;; 	     (with-foreign-object (pixels :double count)
+;; 	       (magick-get-image-pixels w 0 0 iw ih "I" :double pixels)
+;; 	       (defparameter *pixels* 
+;; 		 (dotimes (i count result)
+;; 		   (setf (aref result i) (mem-aref pixels :double i)))))))
+
+;; (defparameter *indexes* 
+;; 	   (loop 
+;; 	      with m = (mean *mintensities*)
+;; 	      with 3sigma = (* 3 (variance *mintensities* m))
+;; 	      for i below (first (gsll:dimensions *mintensities*))
+;; 	      for take = (< (abs (- (maref *mintensities* i) m)) 3sigma)
+;; 	      when take collect i))
