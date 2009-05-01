@@ -3,3 +3,5 @@ gsll.asd
 gsll-tests.asd
 imago.asd
 zlib.asd
+lisp-magick.asd
+*.png
