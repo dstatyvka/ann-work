@@ -2,4 +2,4 @@
 
 
 (defpackage :number-one
-  (:use :cl :gsll :lisp-magick :cl-fad :cl-utilities))
+  (:use :cl :gsll :cffi :lisp-magick :cl-fad :cl-utilities))
