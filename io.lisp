@@ -35,5 +35,5 @@
 (defmacro with-source ((var pathname) &body body)
   `(with-magick-wand (,var :load ,pathname)
      (magick-set-image-colorspace ,var :gray)
-     (magick-median-filter-image ,var 5d0)
+     (magick-median-filter-image ,var 3d0)
      ,@body))
