@@ -57,13 +57,13 @@
 
 (defun angle-from-vecs (vecs)
   (let* ((x1 (maref vecs 0 0))
-	 ;; (y1 (maref vecs 0 1))
+	 (y1 (maref vecs 0 1))
 	 ;; (x2 (maref vecs 1 0))
 ;; 	 (y2 (maref vecs 1 1))
 	 (alpha1 (acos x1))
 	 ;; (alpha2 (asin y1))
 	 )
-    (to-degrees alpha1)))
+    (* (signum (- y1)) (to-degrees alpha1))))
 
 (defun point (min max p)
   (+ min (* p (- max min))))
