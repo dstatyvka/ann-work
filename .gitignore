@@ -5,3 +5,4 @@ imago.asd
 zlib.asd
 lisp-magick.asd
 *.png
+*.fasl
