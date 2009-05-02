@@ -93,3 +93,15 @@
     (with-filter (www xs ys (threshold www 0.6d0))
       (apply #'draw-results www (calc-eigens xs ys))
       (magick-display-image www ":0"))))
+
+(defun process-file (source target)
+  (with-source (www (namestring source))
+    (with-filter (www xs ys (threshold www 0.6d0))
+      (apply #'draw-results www (calc-eigens xs ys))
+      (magick-write-image www (namestring target)))))
+
+(defun process-directory (sources-dir target-dir)
+  (ensure-directories-exist target-dir)
+  (dolist (source (list-directory sources-dir))
+    (let ((target (merge-pathnames (file-namestring source) target-dir)))
+      (process-file source target))))
