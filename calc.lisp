@@ -31,8 +31,10 @@
     (multiple-value-bind (eigens vecs)
 	(eigenvalues-eigenvectors m)
       (declare (ignore eigens))
-      (values (axes x-mean y-mean xs ys vecs)
-	      vecs))))
+      (list
+       x-mean y-mean 
+       (axes x-mean y-mean xs ys vecs)
+       vecs))))
 
 (defmacro with-filter ((wand x-list-var y-list-var threshold) &body body)
   (once-only (wand threshold)
@@ -50,6 +52,19 @@
 		 (incf ,i)))
 	   (progn ,@body))))))
 
+(defun to-degrees (radians)
+  (/ radians pi (/ 1d0 180d0)))
+
+(defun angle-from-vecs (vecs)
+  (let* ((x1 (maref vecs 0 0))
+	 ;; (y1 (maref vecs 0 1))
+	 ;; (x2 (maref vecs 1 0))
+;; 	 (y2 (maref vecs 1 1))
+	 (alpha1 (acos x1))
+	 ;; (alpha2 (asin y1))
+	 )
+    (to-degrees alpha1)))
+
 (defun point (min max p)
   (+ min (* p (- max min))))
 
@@ -61,7 +76,20 @@
 		      p)))
     (point p-min p-max coeff)))
 
+(defun draw-results (wand x-mean y-mean sizes vecs)
+  (with-drawing-wand (dw)
+    (with-pixel-wand (pw :comp (0 0 0 0))
+      (draw-set-fill-color dw pw))
+    (with-pixel-wand (pw :comp (0 0 0))
+      (draw-set-stroke-color dw pw))
+    (draw-translate dw x-mean y-mean)
+    (draw-rotate dw (angle-from-vecs vecs))
+    (destructuring-bind (x-size y-size) sizes
+      (draw-ellipse dw 0.0d0 0.0d0 x-size y-size 0.0d0 360.0d0))
+    (magick-draw-image wand dw)))
+
 (defun test ()
   (with-source (www "../9_19/00000006.png")
     (with-filter (www xs ys (threshold www 0.6d0))
-      (calc-eigens xs ys))))
+      (apply #'draw-results www (calc-eigens xs ys))
+      (magick-display-image www ":0"))))
